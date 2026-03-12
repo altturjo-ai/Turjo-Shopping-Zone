@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Turjo Shopping Zone - বাংলাদেশের সেরা অনলাইন শপ</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Baloo+Da+2:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -20,6 +20,7 @@
     --green: #2e7d32;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { touch-action: manipulation; }
   body { font-family: 'Hind Siliguri', sans-serif; background: #f0f0f0; color: var(--text); }
   body::before { content:''; position:fixed; inset:0; z-index:-1; background:linear-gradient(125deg,#ff0080,#ff4500,#ffcc00,#00ff88,#00cfff,#7f00ff,#ff0080); background-size:400% 400%; animation:rainbowMove 8s ease infinite; opacity:0.18; }
   @keyframes rainbowMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
@@ -723,86 +724,87 @@ updateCart();
     animLogin();
   }
 
-  // ===== RAINBOW NEON CURSOR =====
-  document.body.style.cursor = 'none';
+  // ===== RAINBOW NEON CURSOR (PC ONLY) =====
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768 || 'ontouchstart' in window;
 
-  const cur = document.createElement('div');
-  cur.style.cssText = `
-    position:fixed; width:20px; height:20px; border-radius:50%;
-    background: conic-gradient(#ff0080, #ff6600, #ffcc00, #00ff88, #00cfff, #bf00ff, #ff0080);
-    pointer-events:none; z-index:9999; transform:translate(-50%,-50%);
-    box-shadow: 0 0 12px #ff0080, 0 0 24px #ffcc00, 0 0 40px #00cfff;
-    animation: spinCursor 1.5s linear infinite;
-    transition: width .15s, height .15s;
-  `;
+  if (!isMobile) {
+    document.body.style.cursor = 'none';
 
-  const curR = document.createElement('div');
-  curR.style.cssText = `
-    position:fixed; width:40px; height:40px; border-radius:50%;
-    border: 2px solid transparent;
-    background: linear-gradient(#0f3460,#0f3460) padding-box,
-                conic-gradient(#ff0080,#ffcc00,#00cfff,#bf00ff,#ff0080) border-box;
-    pointer-events:none; z-index:9998; transform:translate(-50%,-50%);
-    transition: left .08s ease, top .08s ease, width .15s, height .15s;
-    animation: spinCursorReverse 2s linear infinite;
-  `;
-
-  const curStyle = document.createElement('style');
-  curStyle.textContent = `
-    @keyframes spinCursor { to { transform: translate(-50%,-50%) rotate(360deg); } }
-    @keyframes spinCursorReverse { to { transform: translate(-50%,-50%) rotate(-360deg); } }
-    * { cursor: none !important; }
-  `;
-  document.head.append(curStyle);
-  document.body.append(cur, curR);
-
-  document.addEventListener('mousemove', e => {
-    cur.style.left = e.clientX + 'px';
-    cur.style.top = e.clientY + 'px';
-    setTimeout(() => {
-      curR.style.left = e.clientX + 'px';
-      curR.style.top = e.clientY + 'px';
-    }, 60);
-
-    // Rainbow trail
-    const trail = document.createElement('div');
-    const colors = ['#ff0080','#ff6600','#ffcc00','#00ff88','#00cfff','#bf00ff'];
-    const c = colors[Math.floor(Math.random()*colors.length)];
-    trail.style.cssText = `
-      position:fixed; width:8px; height:8px; border-radius:50%;
-      background:${c}; left:${e.clientX}px; top:${e.clientY}px;
-      pointer-events:none; z-index:9990;
-      transform:translate(-50%,-50%) scale(1);
-      transition: transform .5s ease, opacity .5s ease;
-      box-shadow: 0 0 6px ${c};
+    const cur = document.createElement('div');
+    cur.style.cssText = `
+      position:fixed; width:20px; height:20px; border-radius:50%;
+      background: conic-gradient(#ff0080, #ff6600, #ffcc00, #00ff88, #00cfff, #bf00ff, #ff0080);
+      pointer-events:none; z-index:9999; transform:translate(-50%,-50%);
+      box-shadow: 0 0 12px #ff0080, 0 0 24px #ffcc00, 0 0 40px #00cfff;
+      animation: spinCursor 1.5s linear infinite;
+      transition: width .15s, height .15s;
     `;
-    document.body.append(trail);
-    requestAnimationFrame(() => {
-      trail.style.transform = 'translate(-50%,-50%) scale(0)';
-      trail.style.opacity = '0';
-    });
-    setTimeout(() => trail.remove(), 500);
-  });
 
-  // Hover enlarge on interactive elements
-  document.querySelectorAll('button, a, .product-card, .cat-card, .cat-item, .lm-social-btn, .lm-login-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cur.style.width = '30px'; cur.style.height = '30px';
-      curR.style.width = '54px'; curR.style.height = '54px';
-      cur.style.boxShadow = '0 0 20px #ff0080, 0 0 40px #ffcc00, 0 0 60px #00cfff';
-    });
-    el.addEventListener('mouseleave', () => {
-      cur.style.width = '20px'; cur.style.height = '20px';
-      curR.style.width = '40px'; curR.style.height = '40px';
-      cur.style.boxShadow = '0 0 12px #ff0080, 0 0 24px #ffcc00, 0 0 40px #00cfff';
-    });
-  });
+    const curR = document.createElement('div');
+    curR.style.cssText = `
+      position:fixed; width:40px; height:40px; border-radius:50%;
+      border: 2px solid transparent;
+      background: linear-gradient(#0f3460,#0f3460) padding-box,
+                  conic-gradient(#ff0080,#ffcc00,#00cfff,#bf00ff,#ff0080) border-box;
+      pointer-events:none; z-index:9998; transform:translate(-50%,-50%);
+      transition: left .08s ease, top .08s ease, width .15s, height .15s;
+      animation: spinCursorReverse 2s linear infinite;
+    `;
 
-  // Click burst
-  document.addEventListener('mousedown', () => {
-    cur.style.transform = 'translate(-50%,-50%) scale(0.6)';
-    setTimeout(() => cur.style.transform = '', 150);
-  });
+    const curStyle = document.createElement('style');
+    curStyle.textContent = `
+      @keyframes spinCursor { to { transform: translate(-50%,-50%) rotate(360deg); } }
+      @keyframes spinCursorReverse { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+      * { cursor: none !important; }
+    `;
+    document.head.append(curStyle);
+    document.body.append(cur, curR);
+
+    document.addEventListener('mousemove', e => {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        curR.style.left = e.clientX + 'px';
+        curR.style.top = e.clientY + 'px';
+      }, 60);
+
+      const trail = document.createElement('div');
+      const colors = ['#ff0080','#ff6600','#ffcc00','#00ff88','#00cfff','#bf00ff'];
+      const c = colors[Math.floor(Math.random()*colors.length)];
+      trail.style.cssText = `
+        position:fixed; width:8px; height:8px; border-radius:50%;
+        background:${c}; left:${e.clientX}px; top:${e.clientY}px;
+        pointer-events:none; z-index:9990;
+        transform:translate(-50%,-50%) scale(1);
+        transition: transform .5s ease, opacity .5s ease;
+        box-shadow: 0 0 6px ${c};
+      `;
+      document.body.append(trail);
+      requestAnimationFrame(() => {
+        trail.style.transform = 'translate(-50%,-50%) scale(0)';
+        trail.style.opacity = '0';
+      });
+      setTimeout(() => trail.remove(), 500);
+    });
+
+    document.querySelectorAll('button, a, .product-card, .cat-card, .cat-item, .lm-social-btn, .lm-login-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cur.style.width = '30px'; cur.style.height = '30px';
+        curR.style.width = '54px'; curR.style.height = '54px';
+        cur.style.boxShadow = '0 0 20px #ff0080, 0 0 40px #ffcc00, 0 0 60px #00cfff';
+      });
+      el.addEventListener('mouseleave', () => {
+        cur.style.width = '20px'; cur.style.height = '20px';
+        curR.style.width = '40px'; curR.style.height = '40px';
+        cur.style.boxShadow = '0 0 12px #ff0080, 0 0 24px #ffcc00, 0 0 40px #00cfff';
+      });
+    });
+
+    document.addEventListener('mousedown', () => {
+      cur.style.transform = 'translate(-50%,-50%) scale(0.6)';
+      setTimeout(() => cur.style.transform = '', 150);
+    });
+  }
 
 </script>
 </body>
